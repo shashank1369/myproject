@@ -1,0 +1,114 @@
+Create Your Application
+
+******1.Create a new project folder:
+myflask/
+
+Inside it, create the following two files:
+*******2.app.py
+
+from flask import Flask
+app = Flask(__name__)
+@app.route("/")
+def home():
+    return "Hello from Docker!"
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+
+
+******3.requirements.txt
+Flask==2.2.5
+
+
+ *******4. Create a Dockerfile
+Create a file named Dockerfile in the same folder (myflask/):
+
+# 1. Use an official Python runtime as base image
+FROM python:3.10-slim
+# 2. Set working directory inside container
+WORKDIR /app
+# 3. Copy dependencies file
+COPY requirements.txt .
+# 4. Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+# 5. Copy all project files into container
+COPY . .
+# 6. Expose the application port
+EXPOSE 5000
+# 7. Run the application
+CMD ["python", "app.py"]
+
+ 4. Build the Docker Image
+Run the following command inside the project directory:
+
+docker build -t myflask:1.0 .
+
+Verify image:
+docker images
+
+📌 5. Run the Docker Container
+
+Start your container:
+
+docker run -p 5000:5000 myflask:1.0
+
+
+Now open your browser and visit:
+
+http://localhost:5000
+
+
+You should see your Flask message!
+
+📌 6. Manage Containers
+See running containers
+docker ps
+
+Stop a container
+docker stop <container-id>
+
+Remove a container
+docker rm <container-id>
+
+Remove image
+docker rmi myflask:1.0
+
+📌 7. Enter Inside a Running Container (Optional)
+docker exec -it <container-id> /bin/bash
+
+📌 8. Using docker-compose (Optional, For Multi-container Apps)
+
+Create a file named docker-compose.yml:
+
+version: "3.8"
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+
+
+Run all services:
+
+docker compose up -d
+
+
+Stop everything:
+
+docker compose down
+
+📌 9. Push Image to Docker Hub (Optional)
+docker login
+docker tag myflask:1.0 yourusername/myflask:1.0
+docker push yourusername/myflask:1.0
+
+📌 10. Summary (Short Version)
+
+Write app
+
+Write Dockerfile
+
+docker build -t myflask:1.0 .
+
+docker run -p 5000:5000 myflask:1.0
+
+Open: http://localhost:5000
